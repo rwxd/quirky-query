@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quirk Query</title>
+
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+        }
+
+        #messages {
+            height: 600px; /* Set the desired fixed height */
+            overflow-y: auto; /* Enable vertical scrollbar if content exceeds the fixed height */
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: black; /* Terminal background color */
+            color: #00ff00; /* Terminal text color */
+            margin-left: 400px;
+            margin-right: 400px;
+        }
+
+        p {
+            margin: 0; /* Remove default margin for paragraphs */
+        }
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8000/stream");
+
+        socket.onmessage = function (event) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += `<p>${event.data}</p>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom to show the latest message
+        };
+    </script>
+</body>
+</html>
