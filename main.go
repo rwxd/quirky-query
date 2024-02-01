@@ -36,6 +36,7 @@ func main() {
 	}
 	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel}))
 	slog.SetDefault(logger)
+	slog.Info("Starting", "logLevel", logLevel, "port", *flagPort)
 
 	tracker := internal.NewTracker()
 	tracker.CleanUpLoop()
@@ -58,10 +59,16 @@ func main() {
 }
 
 func Home(c echo.Context) error {
-	return c.Render(http.StatusOK, "index.html", nil)
+	fqdn := os.Getenv("FQDN")
+	if fqdn == "" {
+		fqdn = "localhost:8000"
+	}
+
+	return c.Render(http.StatusOK, "index.html", map[string]interface{}{"fqdn": fqdn})
 }
 
 func Stream(c echo.Context, tracker *internal.Tracker) error {
+	slog.Info("Stream Requested", "remoteAddr", c.Request().RemoteAddr)
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		tracker.AddWebsocket(ws)

@@ -18,5 +18,5 @@ COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/quirky-query .
 
 
-# Define the command to run your application
-CMD ["./quirky-query"]
+ENTRYPOINT ["./quirky-query"]
+CMD []

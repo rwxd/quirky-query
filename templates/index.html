@@ -30,7 +30,7 @@
     <div id="messages"></div>
 
     <script>
-        const socket = new WebSocket("ws://localhost:8000/stream");
+        const socket = new WebSocket("ws://{{ .fqdn }}/stream");
 
         socket.onmessage = function (event) {
             const messagesDiv = document.getElementById("messages");
