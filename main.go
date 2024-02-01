@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -65,7 +66,7 @@ func Home(c echo.Context) error {
 	}
 
 	ws_secure := true
-	if os.Getenv("WS_SECURE") != "" {
+	if os.Getenv("WS_SECURE") == "" || strings.ToLower(os.Getenv("WS_SECURE")) == "false" {
 		ws_secure = false
 	}
 

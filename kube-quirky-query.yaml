@@ -12,5 +12,10 @@ spec:
     image: quirky-query:local
     args:
     - -v
+    env:
+      - name: FQDN
+        value: quirky-query.rwxd.de
+      - name: WS_SECURE
+        value: "TRUE"
     volumeMounts: []
   volumes: []
