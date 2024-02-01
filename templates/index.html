@@ -6,29 +6,47 @@
     <title>Quirky Query</title>
 
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Courier New', monospace;
-            background-color: black;
-            color: #00ff00; /* Light green text */
-        }
-
-        #messages {
-            height: 100%;
-            overflow-y: auto; /* Enable vertical scrollbar if content exceeds the fixed height */
-            padding: 10px;
             background-color: black;
             background-image: radial-gradient(
                 rgba(0, 150, 0, 0.75), black 120%
             );
-            color: #00ff00;
-            /* margin-left: 20rem; */
-            /* margin-right: 20rem; */
+            height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            color: white;
+            font: 1.3rem Inconsolata, monospace;
+            text-shadow: 0 0 5px #C8C8C8;
+            overflow: hidden;
+            position: relative; /* Added relative positioning for the monitor lines */
+        }
+
+
+        #messages {
+            overflow-y: auto; /* Enable vertical scrolling for the messages div */
+            height: calc(100vh - 2rem); /* Adjust the height to leave space for the prompt at the bottom */
+        }
+
+        #messages::after {
+            content: ''; /* Create the pseudo-element content */
+            position: absolute; /* Position the pseudo-element */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(black, 0.15),
+                rgba(black, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            ); /* Create horizontal lines using repeating linear gradient */
+            pointer-events: none; /* Allow interactions with elements behind the pseudo-element */
+        }
+
+        ::selection {
+            background: #0080FF;
+            text-shadow: none;
         }
 
         span {
