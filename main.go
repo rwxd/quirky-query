@@ -65,7 +65,7 @@ func Home(c echo.Context) error {
 	}
 
 	ws_secure := true
-	if os.Getenv("WS_SECURE") == "" {
+	if os.Getenv("WS_SECURE") != "" {
 		ws_secure = false
 	}
 
