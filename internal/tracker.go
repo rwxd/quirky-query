@@ -18,14 +18,24 @@ var (
 )
 
 type TrackerQueueItem struct {
-	Path   string
-	Method string
-	Query  string
-	Body   string
+	Path     string
+	Method   string
+	Query    string
+	Body     string
+	Username string
+	Password string
+	Headers  map[string][]string
 }
 
 func (t *TrackerQueueItem) String() string {
-	return t.Method + " " + t.Path + " " + t.Query + " " + t.Body
+	output := t.Method + " " + t.Path + " " + t.Query + " " + t.Body
+	if t.Username != "" {
+		output += " Username=" + t.Username
+	}
+	if t.Password != "" {
+		output += " Password=" + t.Password
+	}
+	return output
 }
 
 type Tracker struct {
@@ -51,11 +61,15 @@ func (s *Tracker) RequestTrackerMiddleware(next echo.HandlerFunc) echo.HandlerFu
 			return err
 		}
 
+		username, password, _ := c.Request().BasicAuth()
 		item := TrackerQueueItem{
-			Path:   c.Request().URL.Path,
-			Method: c.Request().Method,
-			Query:  c.Request().URL.RawQuery,
-			Body:   string(bodyBytes),
+			Path:     c.Request().URL.Path,
+			Method:   c.Request().Method,
+			Query:    c.Request().URL.RawQuery,
+			Body:     string(bodyBytes),
+			Username: username,
+			Password: password,
+			Headers:  c.Request().Header,
 		}
 
 		s.Stream <- item

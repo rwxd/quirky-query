@@ -56,6 +56,9 @@ func main() {
 	e.GET("/", RouteHome)
 	e.GET("/stream", func(c echo.Context) error { return RouteStream(c, tracker) })
 	e.GET("/admin", RouteAdmin)
+	e.Group("/admin", middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		return false, nil
+	}))
 
 	e.Logger.Fatal(e.Start(":" + *flagPort))
 }
