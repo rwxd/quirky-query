@@ -53,13 +53,14 @@ func main() {
 
 	e.Renderer = templates
 
-	e.GET("/", Home)
-	e.GET("/stream", func(c echo.Context) error { return Stream(c, tracker) })
+	e.GET("/", RouteHome)
+	e.GET("/stream", func(c echo.Context) error { return RouteStream(c, tracker) })
+	e.GET("/admin", RouteAdmin)
 
 	e.Logger.Fatal(e.Start(":" + *flagPort))
 }
 
-func Home(c echo.Context) error {
+func RouteHome(c echo.Context) error {
 	fqdn := os.Getenv("FQDN")
 	if fqdn == "" {
 		fqdn = "localhost:" + *flagPort
@@ -73,11 +74,17 @@ func Home(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{"fqdn": fqdn, "ws_secure": ws_secure})
 }
 
-func Stream(c echo.Context, tracker *internal.Tracker) error {
+func RouteStream(c echo.Context, tracker *internal.Tracker) error {
 	slog.Info("Stream Requested", "remoteAddr", c.Request().RemoteAddr)
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		tracker.AddWebsocket(ws)
 	}).ServeHTTP(c.Response(), c.Request())
 	return nil
+}
+
+// Basic auth endpoint
+func RouteAdmin(c echo.Context) error {
+	_, _, _ = c.Request().BasicAuth()
+	return c.String(http.StatusUnauthorized, "Unauthorized")
 }
