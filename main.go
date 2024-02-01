@@ -61,10 +61,15 @@ func main() {
 func Home(c echo.Context) error {
 	fqdn := os.Getenv("FQDN")
 	if fqdn == "" {
-		fqdn = "localhost:8000"
+		fqdn = "localhost:" + *flagPort
 	}
 
-	return c.Render(http.StatusOK, "index.html", map[string]interface{}{"fqdn": fqdn})
+	ws_secure := true
+	if os.Getenv("WS_SECURE") == "" {
+		ws_secure = false
+	}
+
+	return c.Render(http.StatusOK, "index.html", map[string]interface{}{"fqdn": fqdn, "ws_secure": ws_secure})
 }
 
 func Stream(c echo.Context, tracker *internal.Tracker) error {
