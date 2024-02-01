@@ -80,7 +80,13 @@ func (s *Tracker) AddWebsocket(ws *websocket.Conn) {
 	for item := range s.Stream {
 		s.Lock()
 		for client := range s.Clients {
-			err := websocket.Message.Send(client, item.String())
+			safeString, err := inputToSafeHTML(item.String())
+			if err != nil {
+				slog.Error("Could not convert string to safe HTML", "error", err)
+				break
+			}
+
+			err = websocket.Message.Send(client, safeString)
 			if err != nil {
 				slog.Error("Could not send message to websocket", "error", err)
 				client.Close()

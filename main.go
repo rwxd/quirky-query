@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
+	"html/template"
 	"io"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
