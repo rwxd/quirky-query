@@ -29,6 +29,7 @@
 <body>
     <div id="messages">
         <p>Connecting websocket to {{ .fqdn }}...</p>
+        <span>❯ </span>
     </div>
 
     <script>
@@ -40,7 +41,9 @@
 
         socket.onmessage = function (event) {
             const messagesDiv = document.getElementById("messages");
-            messagesDiv.innerHTML += `<p>${event.data}\n</p>`;
+            messagesDiv.innerHTML += `<span>${event.data}</span>`;
+            messagesDiv.innerHTML += `<br>`;
+            messagesDiv.innerHTML += `<span>❯ </span>`;
             messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom to show the latest message
         };
     </script>
