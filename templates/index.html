@@ -6,19 +6,37 @@
     <title>Quirky Query</title>
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Courier New', monospace;
+            background-color: black;
+            color: #00ff00; /* Light green text */
         }
 
         #messages {
-            height: 600px; /* Set the desired fixed height */
+            height: 100%;
             overflow-y: auto; /* Enable vertical scrollbar if content exceeds the fixed height */
             padding: 10px;
-            border: 1px solid #ccc;
-            background-color: black; /* Terminal background color */
-            color: #00ff00; /* Terminal text color */
-            margin-left: 20rem;
-            margin-right: 20rem;
+            background-color: black;
+            background-image: radial-gradient(
+                rgba(0, 150, 0, 0.75), black 120%
+            );
+            color: #00ff00;
+            /* margin-left: 20rem; */
+            /* margin-right: 20rem; */
+        }
+
+        span {
+            display: block; /* Each line is a block */
+        }
+
+        span::before {
+            content: '$> '; /* Add a prompt before each line */
         }
 
         p {
@@ -29,7 +47,6 @@
 <body>
     <div id="messages">
         <p>Connecting websocket to {{ .fqdn }}...</p>
-        <span>❯ </span>
     </div>
 
     <script>
@@ -39,11 +56,19 @@
         const socket = new WebSocket("ws://{{ .fqdn }}/stream");
         {{ end }}
 
+        socket.onopen = function (event) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<p>WebSocket connection successful!</p>";
+        };
+
+        socket.onerror = function (error) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<p>WebSocket connection failed.</p>";
+        };
+
         socket.onmessage = function (event) {
             const messagesDiv = document.getElementById("messages");
             messagesDiv.innerHTML += `<span>${event.data}</span>`;
-            messagesDiv.innerHTML += `<br>`;
-            messagesDiv.innerHTML += `<span>❯ </span>`;
             messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom to show the latest message
         };
     </script>
